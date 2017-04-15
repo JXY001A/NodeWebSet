@@ -1,0 +1,29 @@
+{
+  "name": "nodeweb_set",
+  "version": "1.0.0",
+  "description": "node 建站练习",
+  "main": "\u001b[\u001b\u001b[C\u001b[C\u001b[C\u001b[B",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JXY001A/NodeWebSet.git"
+  },
+  "keywords": [
+    "node",
+    "webSet"
+  ],
+  "author": "JXY001A",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JXY001A/NodeWebSet/issues"
+  },
+  "homepage": "https://github.com/JXY001A/NodeWebSet#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "jade": "^1.11.0",
+    "moment": "^2.18.1",
+    "mongoose": "^4.9.4"
+  }
+}
