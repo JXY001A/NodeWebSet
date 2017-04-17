@@ -11,11 +11,11 @@ var MovieSchema = new mongoose.Schema({
 	meta: {
 		createAt: {
 			type: Date,
-			default: Date.now();
+			default: Date.now()
 		},
 		updateAt: {
 			type: Date,
-			default: Date.now();
+			default: Date.now()
 		}
 	}
 });
@@ -34,8 +34,8 @@ MovieSchema.statics = {
 	fetch: function(cb) {
 		return this
 			.find({})
-			.sort('meta.updateAt')
 			.exec(cb);
+			// .sort('meta.updateAt')
 
 	},
 	findById: function(id, cb) {
@@ -44,6 +44,35 @@ MovieSchema.statics = {
 				_id: id
 			})
 			.exec(cb);
+	},
+	insertOne: function(movie,cb){
+		return this
+			.insert(movie)
+			.exec(cb);
 	}
 };
-moudle.export = MovieSchema;
+module.exports = MovieSchema;
+
+
+
+// utl ="http://player.ku6.com/inside/hgwqsQ1SZfzWcD5Nhkigrw../v.swf&adss=0"
+// var data = {
+// 	doctor: '唐唐',
+// 	title: '唐唐脱口秀',
+// 	language: '中文',
+// 	country: '中国',
+// 	summary: '最逗比的龙套演员',
+// 	flash: 'http://player.ku6.com/inside/hgwqsQ1SZfzWcD5Nhkigrw../v.swf&adss=0',
+// 	poster: 'http://img3.imgtn.bdimg.com/it/u=1862910970,2759126115&fm=23&gp=0.jpg',
+// 	year: 2017
+// }
+// db.movie.insert({
+// 	doctor: '唐唐',
+// 	title: '唐唐脱口秀',
+// 	language: '中文',
+// 	country: '中国',
+// 	summary: '最逗比的龙套演员',
+// 	flash: 'http://player.ku6.com/inside/hgwqsQ1SZfzWcD5Nhkigrw../v.swf&adss=0',
+// 	poster: 'http://img3.imgtn.bdimg.com/it/u=1862910970,2759126115&fm=23&gp=0.jpg',
+// 	year: 2017
+// })
