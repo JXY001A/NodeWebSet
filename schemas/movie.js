@@ -29,32 +29,26 @@ MovieSchema.pre('save', function(next) {
 	// 应该是继续执行下一条（递归实现）
 	next();
 });
+
 MovieSchema.statics = {
 	// 该方法用于取出当前数据库中的所有数据
 	fetch: function(cb) {
 		return this
 			.find({})
-			.exec(cb);
-			// .sort('meta.updateAt')
-
-	},
-	findById: function(id, cb) {
-		return this
-			.findOne({
-				_id: id
-			})
+			.sort('meta.updateAt')
 			.exec(cb);
 	},
-	insertOne: function(movie,cb){
+	findId: function(id, cb) {
+		console.log(123);
 		return this
-			.insert(movie)
+			.findById({_id : id})
 			.exec(cb);
 	}
 };
 module.exports = MovieSchema;
+// db.movies.find({"_id":"ObjectId('58f5bfa07bf4a8207cdce06d')"})
 
-
-
+ // ObjectId('58f5bfa07bf4a8207cdce06d')
 // utl ="http://player.ku6.com/inside/hgwqsQ1SZfzWcD5Nhkigrw../v.swf&adss=0"
 // var data = {
 // 	doctor: '唐唐',
