@@ -42,29 +42,34 @@ app.use(serveStatic('bower_components'));
 app.listen(port, function() {
 	console.log('程序运行在' + port + '端口');
 });
-//  首页
-app.get('/', function(req, res) {
 
-	res.render('index', {
-		title: 'movie index'
-	});
-});
+
 // 具体电影的详情页
-var mov = {
-	title: 'i_movie 后台录入页',
-	movie: {
+
+var m = {
 		doctor: '唐唐',
 		title: '唐唐脱口秀',
 		language: '中文',
 		country: '中国',
 		summary: '最逗比的龙套演员',
 		flash: 'http://player.ku6.com/inside/hgwqsQ1SZfzWcD5Nhkigrw../v.swf&adss=0',
-		poster: 'http://img.ivsky.com/img/tupian/co/201612/12/shishang_qingnian_dai_yanjing.jpg',
+		poster: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1492487213917&di=0f28e5fa8adb1f8683a6c19514843e8f&imgtype=0&src=http%3A%2F%2Fr4.ykimg.com%2F050E000053B6789767379F14F10A9BEA',
 		year: 2017
 	}
-}
+//  首页
+app.get('/', function(req, res) {
+
+	res.render('index', {
+		title: '首页',
+		movies:[m,m,m,m,m,m,m,m,m,m]
+	});
+});
+
 app.get('/movie/:id', function(req, res) {
-	res.render('detail', mov);
+	res.render('detail', {
+		title:'电影详情页',
+		movie:m
+	});
 });
 // 列表页
 app.get('/admin/list', function(req, res) {
@@ -83,5 +88,8 @@ app.get('/admin/list', function(req, res) {
 // 后台录入页
 
 app.get('/admin/movie', function(req, res) {
-	res.render('admin', mov);
+	res.render('admin', {
+		title:'后台录入',
+		movie:m
+	});
 });
