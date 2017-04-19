@@ -9,7 +9,8 @@
  */
 var express = require('express');
 var mongoose = require('mongoose');
-var objectId = require('mongodb').ObjectID;
+// 用于合并两个属性值基本相同的对象
+var _underscore = require('underscore');
 
 var path = require('path');
 // 因为后台录入页有提交表单的步骤，故加载此模块方法（bodyParser模块来做文件解析），将表单里的数据进行格式化
@@ -43,15 +44,13 @@ var app = express();
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
-app.use(bodyParser.json({
-	extended: true
-}));
+app.use(bodyParser.json());
 
 // 注意 app.set('views','./views') 中 views必须写对
 app.set('views', './views/pages');
 app.set('view engine', 'jade');
 // 设置静态文件访问入口文件
-app.use(serveStatic('bower_components'));
+app.use(serveStatic('public/libs'));
 // 用于格式化日期
 app.locals.moment = require('moment');
 app.listen(port, function() {
@@ -73,10 +72,10 @@ var m = {
 	}
 	//  首页
 app.get('/', function(req, res) {
-	iMovie.fetch(function(error, movies){
+	iMovie.fetch(function(error, movies) {
 		res.render('index', {
 			title: '首页',
-			movies:movies
+			movies: movies
 		});
 	});
 });
@@ -84,11 +83,10 @@ app.get('/', function(req, res) {
 app.get('/movie/:id', function(req, res) {
 	// 注意req.params 才是正确的写法
 	var id = req.params.id;
-	iMovie.findId(id, function(error, movie) {
+	iMovie.findById(id, function(error, movie) {
 		if (error) {
 			console.log(error);
 		}
-		console.log(movie);
 		res.render('detail', {
 			title: '详情',
 			movie: movie
@@ -121,8 +119,26 @@ app.get('/admin/movie', function(req, res) {
 // post提交必须使用post方法来接受才可以
 app.post('/admin/new', function(req, res) {
 	var movie = req.body.movie;
-	if (movie) {
-		var _movie = new iMovie({
+	var id = movie._id;
+	var _movie = null;
+
+	if (!id) {
+		// 判断为数据修改时的处理
+		iMovie.findById(id, function(error, movieObj) {
+			// 将修改后的对象与原有数据对象更新
+			_movie = _underscore.extend(movieObj, movie);
+
+			_movie.save(function(error, movie) {
+				if (error) {
+					console.log(error);
+				}
+				// 保存成功之后重定向到更新后的详情页
+				res.redirect('/movie/' + movie._id);
+			});
+		});
+	} else {
+		// 数据录入的情况
+		_movie = new iMovie({
 			doctor: movie.doctor,
 			title: movie.title,
 			language: movie.language,
@@ -136,7 +152,36 @@ app.post('/admin/new', function(req, res) {
 			if (error) {
 				console.log(error);
 			}
-			res.redirect('/admin/' + movie._id);
+			res.redirect('/movie/' + movie._id);
+		});
+	}
+});
+// 数据修改
+app.get('/admin/update/:id', function(req, res) {
+	var id = req.params.id;
+	iMovie.findById(id, function(error, movie) {
+		if (error) {
+			console.log(error);
+		}
+		// 通过id获得数据，然后在admin中进行渲染
+		// 之后再提交到数据录入的路由中，然后通过是否
+		// 存在id来判断是数据录入还是数据修改
+		res.render('admin', {
+			title: '修改',
+			movie: movie
+		});
+	});
+});
+app.delete('/admin/delete/:id',function(req,res){
+	var id = req.params.id;
+	if (id) {
+		iMovie.remove({'_id':id},function(error,movie){
+			if (error) {
+				console.log(error);
+			}else{
+				res.json({success:1});
+			}
+
 		});
 	}
 });
