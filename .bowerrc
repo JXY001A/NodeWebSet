@@ -1,0 +1,5 @@
+// bower 的配置文件，当b使用bower来安装的框架组件，都会被安装到
+// 当前的目录中
+{
+	"directory":"public/libs"
+}
