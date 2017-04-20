@@ -21,11 +21,13 @@
   },
   "homepage": "https://github.com/JXY001A/NodeWebSet#readme",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "jade": "^1.11.0",
     "moment": "^2.18.1",
     "mongoose": "^4.9.5",
+    "node-gyp": "^3.6.0",
     "serve-static": "^1.12.1",
     "underscore": "^1.8.3"
   }

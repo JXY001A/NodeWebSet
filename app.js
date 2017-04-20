@@ -36,6 +36,7 @@ mongoose.connection.on('disconnected', function() {
 
 
 var iMovie = require('./moudle/movie.js');
+var iUser = require('././moudle/user.js');
 // var jade = require('jade');
 // 设置默认端口为3000，也可在启东时使用 PORT=4000 node app.js 来动态指定
 var port = process.env.PORT || 3000;
@@ -50,7 +51,8 @@ app.use(bodyParser.json());
 app.set('views', './views/pages');
 app.set('view engine', 'jade');
 // 设置静态文件访问入口文件
-app.use(serveStatic('public/libs'));
+// app.use(serveStatic('public/libs'));
+app.use(express.static('public/libs'));
 // 用于格式化日期
 app.locals.moment = require('moment');
 app.listen(port, function() {
@@ -172,16 +174,41 @@ app.get('/admin/update/:id', function(req, res) {
 		});
 	});
 });
-app.delete('/admin/delete/:id',function(req,res){
+app.delete('/admin/delete/:id', function(req, res) {
 	var id = req.params.id;
 	if (id) {
-		iMovie.remove({'_id':id},function(error,movie){
+		iMovie.remove({
+			'_id': id
+		}, function(error, movie) {
 			if (error) {
 				console.log(error);
-			}else{
-				res.json({success:1});
+			} else {
+				res.json({
+					success: 1
+				});
 			}
 
 		});
 	}
+});
+
+// 注册页
+app.get('/user/signIn', function(req, res) {
+	res.render('signIn',{title:'注册'});
+});
+app.post('/user/signIn',function(req,res) {
+	var user = req.body.user;
+	console.log(user);
+	// 登录成功后重定向到 首页
+	res.redirect('/');
+});
+// 登录页
+app.get('/user/signUp',function (req,res) {
+	res.render('signUp',{title:'登录'});
+});
+app.post('/user/signUp',function(req,res) {
+	var user = req.body.user;
+	console.log(user);
+	// 登录成功后重定向到 首页
+	res.redirect('/');
 });
