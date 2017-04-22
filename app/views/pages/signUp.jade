@@ -1,0 +1,23 @@
+doctype
+html
+	head
+		meta(charset='utf-8')
+		title 注册
+		style(type="text/css").
+			*{padding:0;margin:0}
+			.box{width:300px;height:100px;position:absolute;left:calc(50% - 100px);top:calc(50% - 50px);}
+		include ../include/head.jade
+
+	body
+		h1 #{title}
+		div.box
+			form(action="/user/signUp",method="post")
+				p
+					label(for="signinName") userName:
+					input(type="text",placeholder="输入用户名" , name='user[name]')
+				p
+					label(for="password") password:
+					input(type='password',placeholder="输入密码",name='user[password]')
+				p
+					input(type='submit',value = '提交')
+
