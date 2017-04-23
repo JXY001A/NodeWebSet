@@ -14,6 +14,8 @@ module.exports = function(app) {
 	var User = require('../app/controllers/user');
 	// 引入电影模块
 	var Movie = require('../app/controllers/movie');
+	// 引入评论模块
+	var comment = require('../app/controllers/comment');
 
 	//  首页
 	app.get('/', Index.index);
@@ -46,4 +48,7 @@ module.exports = function(app) {
 	app.get('/user/logout', User.logout);
 	// 用户列表页路由
 	app.get('/user/list', User.signInRequire, User.adminRequire, User.list);
+
+	/*用户评论区路由*/
+	app.post('/user/comment',comment.save);
 }
