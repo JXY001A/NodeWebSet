@@ -22,6 +22,21 @@ var CommentSchema = new mongoose.Schema({
 		type: ObjectId,
 		ref: 'User'
 	},
+	// 其他用户可以对用户的评论进行恢复(这里使用的是数组的形式来储存来自其他用户的评论)
+	reply: [{
+		// 回复给谁
+		to: {
+			type: ObjectId,
+			ref: 'User'
+		},
+		// 谁的回复
+		from: {
+			type: ObjectId,
+			ref: 'User'
+		},
+		// 回复的内容
+		content: String
+	}],
 	content: String,
 	meta: {
 		createAt: {
@@ -36,7 +51,6 @@ var CommentSchema = new mongoose.Schema({
 });
 
 CommentSchema.pre('save', function(next) {
-	console.log('************Comming******** ');
 	if (this.isNew) {
 		this.meta.createAt = this.meta.updateAt = Date.now();
 	} else {
@@ -46,16 +60,18 @@ CommentSchema.pre('save', function(next) {
 });
 
 CommentSchema.statics = {
-  fetch: function(cb) {
-    return this
-      .find({})
-      .sort('meta.updateAt')
-      .exec(cb)
-  },
-  findById: function(id, cb) {
-    return this
-      .findOne({_id: id})
-      .exec(cb)
-  }
+	fetch: function(cb) {
+		return this
+			.find({})
+			.sort('meta.updateAt')
+			.exec(cb)
+	},
+	findById: function(id, cb) {
+		return this
+			.findOne({
+				_id: id
+			})
+			.exec(cb)
+	}
 }
 module.exports = CommentSchema;
