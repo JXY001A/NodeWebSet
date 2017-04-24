@@ -50,5 +50,5 @@ module.exports = function(app) {
 	app.get('/user/list', User.signInRequire, User.adminRequire, User.list);
 
 	/*用户评论区路由*/
-	app.post('/user/comment',comment.save);
+	app.post('/user/comment',User.signInRequire,comment.save);
 }
