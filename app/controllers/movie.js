@@ -8,6 +8,7 @@
  * @version: 1.0
  */
 var iMovie = require('../moudle/movie.js');
+var Comment = require('../moudle/comment.js');
 // 用于合并两个属性值基本相同的对象
 var _underscore = require('underscore');
 // 电影详情页
@@ -18,10 +19,25 @@ exports.detial = function(req, res) {
 		if (error) {
 			console.log(error);
 		}
-		res.render('detail', {
-			title: '详情',
-			movie: movie
-		});
+		Comment
+			.find({'movie':id})
+			// 使用populate方法关联查询from表中与当前电影相关的
+			// 用户名，第一个参数为要关联的表，第二个参数为要
+			// 显示的关联表中的数据字段名
+			.populate('from','name')
+			.populate('reply.from','name')
+			.populate('reply.to','name')
+			.exec(function(err,comments){
+				if (err) {
+					console.log(err);
+				}
+				console.log(comments);
+				res.render('detail', {
+					title: '详情',
+					movie: movie,
+					comments:comments
+				});
+			});
 	});
 };
 
