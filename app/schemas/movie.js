@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
-var MovieSchema = new mongoose.Schema({
+var scheam = mongoose.Schema;
+var objectId = scheam.Types.ObjectId;
+var MovieSchema = new scheam({
 	doctor: String,
 	title: String,
 	language: String,
@@ -8,6 +10,10 @@ var MovieSchema = new mongoose.Schema({
 	flash: String,
 	poster: String,
 	year: Number,
+	category: {
+		type: objectId,
+		ref: 'Category'
+	},
 	meta: {
 		createAt: {
 			type: Date,
@@ -40,7 +46,9 @@ MovieSchema.statics = {
 	},
 	findById: function(id, cb) {
 		return this
-			.findOne({_id : id})
+			.findOne({
+				_id: id
+			})
 			.exec(cb);
 	}
 };
