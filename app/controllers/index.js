@@ -8,12 +8,26 @@
  * @version: 1.0
  */
 //  首页
+var Category = require('../moudle/category.js');
 var iMovie = require('../moudle/movie.js');
 exports.index = function(req, res) {
-	iMovie.fetch(function(error, movies) {
-		res.render('index', {
-			title: '首页',
-			movies: movies
-		});
-	});
+	Category
+		.find({})
+	    .populate({
+	      path: 'movie',
+	      select: 'title  poster',
+	      options: { limit: 6 }
+	    })
+	    .exec(function(err,categories){
+	    	if (err) {
+	    		console.log(err);
+	    	}
+	    	console.log(categories);
+	    	res.render('index', {
+				title: '首页',
+				categories: categories
+			});
+	    });
+
+	
 }

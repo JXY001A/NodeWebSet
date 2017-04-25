@@ -40,8 +40,6 @@ exports.save = function(req, res) {
 					if (err) {
 						console.log(err);
 					}
-					console.log('******************************');
-					console.log(comment);
 					res.redirect('/movie/' + movieId);
 				});
 

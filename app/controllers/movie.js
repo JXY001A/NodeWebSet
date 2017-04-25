@@ -9,6 +9,7 @@
  */
 var iMovie = require('../moudle/movie.js');
 var Comment = require('../moudle/comment.js');
+var Category = require('../moudle/category.js');
 // 用于合并两个属性值基本相同的对象
 var _underscore = require('underscore');
 // 电影详情页
@@ -66,9 +67,13 @@ var m = {
 }
 
 exports.movie = function(req, res) {
-	res.render('admin', {
-		title: '后台录入',
-		movie: m
+	Category.fetch(function(err,categories){
+
+		res.render('admin', {
+			title: '后台录入',
+			movie: m,
+			categories:categories
+		});
 	});
 };
 // 表单提交页(电影数据上传)
@@ -76,11 +81,17 @@ exports.movie = function(req, res) {
 exports.new = function(req, res) {
 	var movie = req.body.movie;
 	var id = movie._id;
+	// 删除的原因是存在 movie._id 的话，那么则无法自动生成
+	// _id ,同时数据也就无法保存成功，故删除之
+	delete movie._id;
+	var catId =  movie.category;
 	var _movie = null;
-
-	if (!id) {
+	if (id) {
 		// 判断为数据修改时的处理
 		iMovie.findById(id, function(error, movieObj) {
+			// 将删除后的id又给添加进去，因为更新的时候
+			// 需要完整的数据类型
+			movie._id=id;
 			// 将修改后的对象与原有数据对象更新
 			_movie = _underscore.extend(movieObj, movie);
 
@@ -94,21 +105,22 @@ exports.new = function(req, res) {
 		});
 	} else {
 		// 数据录入的情况
-		_movie = new iMovie({
-			doctor: movie.doctor,
-			title: movie.title,
-			language: movie.language,
-			country: movie.country,
-			summary: movie.summary,
-			flash: movie.flash,
-			poster: movie.poster,
-			year: movie.year
-		});
+		console.log(movie);
+		_movie = new iMovie(movie);
 		_movie.save(function(error, movie) {
 			if (error) {
 				console.log(error);
 			}
-			res.redirect('/movie/' + movie._id);
+			Category.findById(catId,function(err,category){
+				if (err) {
+					console.log(err);
+				}
+				// 将上传的电影id保存到对应分类表中的数组中
+				category.movie.push(movie._id);
+				category.save(function(err,category){
+					res.redirect('/movie/' + movie._id);
+				});
+			});
 		});
 	}
 };
@@ -122,9 +134,16 @@ exports.update = function(req, res) {
 		// 通过id获得数据，然后在admin中进行渲染
 		// 之后再提交到数据录入的路由中，然后通过是否
 		// 存在id来判断是数据录入还是数据修改
-		res.render('admin', {
-			title: '修改',
-			movie: movie
+		Category.fetch(function(err,categories){
+			if (err) {
+				console.log(err);
+			}
+
+			res.render('admin', {
+				title: '修改',
+				movie: movie,
+				categories:categories
+			});
 		});
 	});
 };
