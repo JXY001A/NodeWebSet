@@ -15,7 +15,9 @@ module.exports = function(app) {
 	// 引入电影模块
 	var Movie = require('../app/controllers/movie');
 	// 引入评论模块
-	var comment = require('../app/controllers/comment');
+	var Comment = require('../app/controllers/comment');
+	// 引入电影标签处理模块
+	var Category = require('../app/controllers/category');
 
 	//  首页
 	app.get('/', Index.index);
@@ -50,5 +52,13 @@ module.exports = function(app) {
 	app.get('/user/list', User.signInRequire, User.adminRequire, User.list);
 
 	/*用户评论区路由*/
-	app.post('/user/comment',User.signInRequire,comment.save);
+	app.post('/user/comment',User.signInRequire,Comment.save);
+
+	// 标签录入路由
+	app.get('/admin/category/new',User.signInRequire,User.adminRequire,Category.new);
+	// 保存上传的标签
+	app.post('/admin/category/save',User.signInRequire,User.adminRequire,Category.save);
+	// 展示标签列表
+	app.get('/admin/category/list',User.signInRequire,User.adminRequire,Category.list);
+	
 }
